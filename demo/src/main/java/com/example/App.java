@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import javafx.scene.layout.StackPane;
 
@@ -14,11 +15,11 @@ public class App extends Application {
     private Graph graph;
     public static int mineCount;
     public static boolean clickable;
-    private static MineCounter mineCounter;
+    private static MineCounter mineCounter; 
     public static DigitalClock digitalClock;
 
     public static void updateMineCount(int count) {
-        mineCount = count;
+        mineCount = count; 
     }
 
 
@@ -26,9 +27,12 @@ public class App extends Application {
     public void start(@SuppressWarnings("exports") Stage stage) throws IOException {
         graph = new Graph(16, 16);
         mineCounter = new MineCounter();
-        clickable = true;
+        clickable = true; 
 
-        // Load the FXML
+        Image icon = new Image("icon.png");
+        stage.getIcons().add(icon); 
+
+        // Load the FXML 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("graph.fxml"));
         loader.setController(new GraphController(graph, mineCounter, digitalClock));
         Parent root = loader.load();
@@ -37,7 +41,6 @@ public class App extends Application {
 
         digitalClock = new DigitalClock();
         
-
         ((StackPane) root).getChildren().add(digitalClock);
         ((StackPane) root).getChildren().add(mineCounter);
 
@@ -45,7 +48,7 @@ public class App extends Application {
 
         Scene scene = new Scene(stackPane, 800, 600);
         stage.setScene(scene);
-        stage.setTitle("Grid Graph Visualization");
+        stage.setTitle("MineSweeper"); 
         stage.setResizable(false);
         stage.show();
     }

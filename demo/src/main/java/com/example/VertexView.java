@@ -1,17 +1,19 @@
 package com.example;
 
 import javafx.scene.Group;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
-import javafx.scene.text.Text;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 
 public class VertexView extends Group {
 
     private static final double SIDE_LENGTH = 20;
     private Rectangle rectangle;
-    private Text numberText;
+    private Label numberText;
 
     private boolean isMine;
     private boolean isRevealed;
@@ -48,15 +50,12 @@ public class VertexView extends Group {
         rectangle.setStroke(Color.DARKGRAY);
         rectangle.setStrokeWidth(2);
 
-        numberText = new Text();
+        numberText = new Label();
         numberText.setFont(Font.font(14));
-        numberText.setFill(Color.BLACK);
+        numberText.setTextFill(Color.BLACK);
         numberText.setVisible(false);
-
-        double textX = (SIDE_LENGTH - numberText.getLayoutBounds().getWidth()) / 3.1;
-        double textY = (SIDE_LENGTH + numberText.getLayoutBounds().getHeight()) / 2.4;
-        numberText.setX(textX);
-        numberText.setY(textY);
+        numberText.setLayoutX(6);
+        numberText.setLayoutY(0);
             rectangle.setOnMouseClicked(event -> {
                 if(!mineClicked) {
                     if (event.getButton() == MouseButton.PRIMARY) { 
@@ -73,13 +72,17 @@ public class VertexView extends Group {
     }
 
     private void handleLeftClick() {
-        if (!isRevealed && !numberText.getText().equals("B") && App.clickable != false) {
+        if (!isRevealed && numberText.getGraphic() == null && App.clickable != false) {
             isRevealed = true;
             if (isMine) {
                 rectangle.setFill(Color.RED);
-                numberText.setText("M");
+                Image icon = new Image("bomb.png");
+                ImageView imageView = new ImageView(icon);
+                imageView.setFitWidth(20);
+                imageView.setFitHeight(20);
+                numberText.setGraphic(imageView);
+                this.numberText.setTranslateX(-6);
                 numberText.setVisible(true);
-                this.numberText.setTranslateX(-3);
                 revealAllMines();
                 mineClicked = true;
                 App.digitalClock.stopClock();
@@ -97,6 +100,7 @@ public class VertexView extends Group {
                     numberText.setVisible(true);
                     rectangle.setFill(Color.BLANCHEDALMOND); 
                     getParent().requestLayout(); 
+                    setColorBasedOnNumber(numberText, neighboringMines);
                 }
             } 
         }
@@ -107,8 +111,12 @@ public class VertexView extends Group {
             if(App.clickable != false){
                 App.digitalClock.start();
                 if (!numberText.isVisible()) {
-                    System.out.println("Right clicked!");
-                    numberText.setText("B");
+                    Image icon = new Image("icon.png");
+                    ImageView imageView = new ImageView(icon);
+                    imageView.setFitWidth(20);
+                    imageView.setFitHeight(20);
+                    numberText.setGraphic(imageView);
+                    this.numberText.setTranslateX(-6);
                     numberText.setVisible(true);
                     numberText.setMouseTransparent(true);
                     App.mineCount--;
@@ -116,7 +124,6 @@ public class VertexView extends Group {
                     refreshMineCounter();
                 }
                 else{
-                    System.out.println("Right clicked!");
                     numberText.setText("");
                     numberText.setVisible(false);
                     App.mineCount++;
@@ -182,6 +189,7 @@ public class VertexView extends Group {
                         if (neighboringMines > 0) {
                             vertexViews[neighborRow][neighborCol].numberText.setText(Integer.toString(neighboringMines)); 
                             vertexViews[neighborRow][neighborCol].numberText.setVisible(true);
+                            setColorBasedOnNumber(vertexViews[neighborRow][neighborCol].numberText, neighboringMines);
                         }
                         if (neighboringMines == 0) {
                             minesweeperBoard.revealCell(neighborRow, neighborCol);
@@ -202,15 +210,49 @@ public class VertexView extends Group {
                     if (vertex.isMine && !vertex.numberText.isVisible()) {
                         vertex.isRevealed = true;
                         vertex.rectangle.setFill(Color.RED);
-                        vertex.numberText.setText("M");
+                        Image icon = new Image("bomb.png");
+                        ImageView imageView = new ImageView(icon);
+                        imageView.setFitWidth(20);
+                        imageView.setFitHeight(20);
+                        vertex.numberText.setGraphic(imageView);
+                        vertex.numberText.setTranslateX(-6);
                         vertex.numberText.setVisible(true);
-                        vertex.numberText.setTranslateX(-3);
                     }
                 }
             }
         }
         
+        private void setColorBasedOnNumber(Label label, int number) {
+            switch (number) {
+                case 1:
+                    label.setTextFill(Color.BLUE);
+                    break;
+                case 2:
+                    label.setTextFill(Color.GREEN);
+                    break;
+                case 3:
+                    label.setTextFill(Color.RED);
+                    break;
+                case 4:
+                    label.setTextFill(Color.DARKBLUE);
+                    break;
+                case 5:
+                    label.setTextFill(Color.BROWN);
+                    break;
+                case 6:
+                    label.setTextFill(Color.CYAN);
+                    break;
+                case 7:
+                    label.setTextFill(Color.BLACK);
+                    break;
+                case 8:
+                    label.setTextFill(Color.GRAY);
+                    break;
+                default:
+                    label.setTextFill(Color.BLACK);
+                    break;
+            }
+        }
         
-        
-        
+    
 }
