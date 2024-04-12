@@ -26,6 +26,8 @@ public class App extends Application {
     @Override
     public void start(@SuppressWarnings("exports") Stage stage) throws IOException {
         graph = new Graph(16, 16);
+        System.out.println("Adjacency List:");
+        graph.printAdjacencyList();
         mineCounter = new MineCounter();
         clickable = true; 
 
